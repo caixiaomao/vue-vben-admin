@@ -1,3 +1,6 @@
+import { useUserStoreWidthOut } from '/@/store/modules/user';
+import { isDevMode } from '/@/utils/env';
+
 // Interface data format used to return a unified format
 
 export function resultSuccess<T = Recordable>(result: T, { message = 'ok' } = {}) {
@@ -42,4 +45,17 @@ export function pagination<T = any>(pageNo: number, pageSize: number, array: T[]
       ? array.slice(offset, array.length)
       : array.slice(offset, offset + Number(pageSize));
   return ret;
+}
+
+/**
+ * @description 本函数仅为解决生产环境下mock无法获取headers数据的问题。
+ *
+ */
+export function getCurrentToken(headers: any): string | undefined {
+  if (isDevMode()) {
+    return headers?.authorization;
+  } else {
+    const { getToken } = useUserStoreWidthOut();
+    return getToken;
+  }
 }
